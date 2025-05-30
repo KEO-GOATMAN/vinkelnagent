@@ -1,383 +1,281 @@
-# Automated Politically-Aware News Summarization & Publishing Agent
+# 🤖 Automated Politically-Aware News Summarization & Publishing Agent
 
-An intelligent news agent that leverages Large Language Models (LLMs) and Retrieval-Augmented Generation (RAG) to monitor Swedish news topics, analyze reporting across political biases, generate neutral summaries, and publish to WordPress - all while maintaining an internal knowledge base for contextual enhancement.
+> An intelligent, fully automated news agent that monitors Swedish news sources, analyzes political bias, generates neutral summaries using RAG-enhanced LLMs, and publishes to WordPress - all deployed on Vercel.
 
-## 🎯 Features
+## ✨ Features
 
-### Core Functionality
-- **Multi-Source News Monitoring**: Tracks Swedish news outlets across the political spectrum
-- **Political Bias Analysis**: Generates perspective-specific summaries from Left, Center, and Right sources
-- **RAG-Enhanced Neutral Summaries**: Creates factual, comprehensive summaries using historical context
-- **Automated WordPress Publishing**: Posts complete analysis with bias visualization
-- **RSS Feed Processing**: Continuous monitoring via Vercel cron jobs
-- **Vector Knowledge Base**: Stores articles for contextual enhancement and internal linking
+### 🎯 Core Functionality
+- **Automated News Monitoring**: Continuous RSS feed monitoring of Swedish news sources
+- **Political Bias Analysis**: Categorizes sources as Left, Center, or Right
+- **Bias-Specific Summaries**: Generates "what the Left/Center/Right is saying" perspectives
+- **Neutral AI Summarization**: RAG-enhanced neutral summaries using Google Gemini
+- **WordPress Publishing**: Automated posting with internal linking
+- **Modern Frontend**: React-based interface with political bias visualization
 
-### Technical Features
-- **Serverless Architecture**: Built for Vercel deployment with optimal cold-start performance
-- **Supabase Vector Database**: Uses pg_vector for similarity search and retrieval
-- **Google Gemini Integration**: Powered by advanced LLM capabilities via LangChain
-- **Swedish News Source Mapping**: Pre-configured bias classifications for major outlets
+### 🧠 AI & Machine Learning
+- **Large Language Models**: Google Gemini via LangChain
+- **Retrieval-Augmented Generation (RAG)**: Historical context for better summaries
+- **Vector Database**: Supabase with pg_vector for semantic search
+- **Embeddings**: Sentence transformers for content similarity
 
-## 🏗️ Architecture
-
-```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Vercel API    │    │   News Sources   │    │   Supabase      │
-│   Functions     │◄──►│   (RSS/Web)      │    │   Vector DB     │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-         │                        │                       │
-         ▼                        ▼                       ▼
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Google        │    │   Content        │    │   WordPress     │
-│   Gemini LLM    │    │   Processing     │    │   Publishing    │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-```
+### 🌐 Architecture
+- **Serverless Deployment**: Vercel Functions for scalability
+- **Cron Jobs**: Automated RSS monitoring every hour
+- **Modern Frontend**: React with TypeScript and Tailwind CSS
+- **RESTful API**: Clean endpoint design for integration
 
 ## 🚀 Quick Start
 
-### Prerequisites
-
-- **Node.js 18+** (for Vercel CLI)
-- **Python 3.9+** (runtime compatibility)
-- **Supabase Account** (for vector database)
-- **Google AI Studio** (for Gemini API key)
-- **Serper.dev Account** (for web search)
-- **WordPress Site** (with REST API enabled)
-
-### 1. Local Development Setup
-
+### 1. Clone and Setup
 ```bash
-# Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/yourusername/news-agent.git
 cd news-agent
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
-
-# Copy environment template
-cp .env.example .env
-
-# Edit .env with your API keys (see Configuration section)
 ```
 
-### 2. Supabase Database Setup
+### 2. Environment Configuration
+Create `.env` file:
+```bash
+# Core API Keys
+GEMINI_API_KEY=your_google_gemini_api_key
+SERPER_API_KEY=your_serper_search_api_key
 
-1. **Create a Supabase project** at [supabase.com](https://supabase.com)
-
-2. **Enable pg_vector extension**:
-   - Go to Database → Extensions in Supabase dashboard
-   - Search for "vector" and enable the extension
-
-3. **Run the setup script**:
-   - Go to SQL Editor in Supabase dashboard
-   - Copy and paste the contents of `setup/supabase_setup.sql`
-   - Execute the script
-
-4. **Get your credentials**:
-   - Project URL: Found in Settings → API
-   - Anon Key: Found in Settings → API
-
-### 3. API Keys Configuration
-
-Create a `.env` file with the following variables:
-
-```env
-# Google Gemini API
-GEMINI_API_KEY=your_gemini_api_key_here
-
-# Supabase Configuration
+# Supabase Vector Database
 SUPABASE_URL=your_supabase_project_url
 SUPABASE_ANON_KEY=your_supabase_anon_key
 
-# Web Search API (Serper.dev)
-SERPER_API_KEY=your_serper_api_key
-
-# WordPress Configuration
+# WordPress Integration
 WORDPRESS_URL=https://your-wordpress-site.com
 WORDPRESS_USERNAME=your_wp_username
 WORDPRESS_PASSWORD=your_wp_app_password
-
-# Optional
-DEBUG=false
-LOG_LEVEL=INFO
 ```
 
-### 4. Local Testing
+### 3. Database Setup
+The Supabase tables are automatically configured. Vector extension and indexes are included.
 
+### 4. Test Locally
 ```bash
-# Test the main processing function
-python api/process_news_topic.py
+# Run quick functionality test
+python quick_test.py
 
-# Test RSS processing
-python api/check_rss_feeds.py
+# Test individual components
+python basic_component_test.py
+
+# Full workflow test
+python real_workflow_test.py
 ```
 
-### 5. Vercel Deployment
-
+### 5. Deploy to Vercel
 ```bash
-# Install Vercel CLI
-npm install -g vercel
+# Deploy using Vercel CLI
+npx vercel login
+npx vercel
 
-# Login to Vercel
-vercel login
-
-# Set environment variables
-vercel env add GEMINI_API_KEY
-vercel env add SUPABASE_URL
-vercel env add SUPABASE_ANON_KEY
-vercel env add SERPER_API_KEY
-vercel env add WORDPRESS_URL
-vercel env add WORDPRESS_USERNAME
-vercel env add WORDPRESS_PASSWORD
-
-# Deploy
-vercel --prod
+# Or use GitHub integration via Vercel dashboard
 ```
 
-## 📖 Usage
+## 📁 Project Structure
 
-### Processing a News Topic
-
-Send a POST request to `/api/process_news_topic`:
-
-```bash
-curl -X POST https://your-vercel-app.vercel.app/api/process_news_topic \
-  -H "Content-Type: application/json" \
-  -d '{
-    "topic_title": "Swedish Election Results",
-    "topic_description": "Analysis of the latest Swedish parliamentary election"
-  }'
+```
+├── api/                          # Vercel serverless functions
+│   ├── process_news_topic.py     # Main news processing endpoint
+│   ├── rss_monitor.py            # Automated RSS monitoring
+│   └── health.py                 # Health check endpoint
+├── src/
+│   ├── components/               # Core business logic
+│   │   ├── llm_manager.py        # LLM integration & prompt management
+│   │   ├── vector_store.py       # RAG and vector database
+│   │   └── wordpress_client.py   # WordPress API integration
+│   ├── utils/                    # Utility functions
+│   │   ├── web_scraper.py        # News article extraction
+│   │   └── rss_parser.py         # RSS feed processing
+│   ├── config/
+│   │   └── settings.py           # Configuration management
+│   └── models/
+│       └── data_models.py        # Pydantic data models
+├── public/                       # React frontend
+│   ├── index.html
+│   ├── script.js                 # Main frontend logic
+│   └── style.css                 # Tailwind CSS styling
+├── tests/                        # Test suite
+│   ├── basic_component_test.py   # Component validation
+│   ├── quick_test.py             # Quick functionality check
+│   └── real_workflow_test.py     # End-to-end workflow test
+├── vercel.json                   # Vercel configuration & cron jobs
+├── requirements.txt              # Python dependencies
+└── DEPLOYMENT_GUIDE.md          # Detailed deployment instructions
 ```
 
-**Expected Response:**
+## 🔧 API Endpoints
+
+### Main Processing
+```http
+POST /api/process_news_topic
+Content-Type: application/json
+
+{
+  "topic": "Swedish Elections 2024",
+  "description": "Latest political developments",
+  "url": "https://example.com/article" // optional
+}
+```
+
+**Response:**
 ```json
 {
-  "status": "success",
-  "data": {
-    "topic": "Swedish Election Results",
-    "neutral_summary": {
-      "summary": "Comprehensive neutral analysis...",
-      "key_facts": ["Fact 1", "Fact 2", "Fact 3"],
-      "internal_links": [{"title": "Related Article", "url": "..."}]
-    },
-    "bias_summaries": [
-      {
-        "political_bias": "Left",
-        "summary": "Left-leaning perspective...",
-        "article_count": 3,
-        "sources": ["Aftonbladet", "Expressen"]
-      }
-    ],
-    "bias_visualization_data": [...],
-    "wordpress_post_id": 123
-  }
+  "success": true,
+  "neutral_summary": "Comprehensive neutral analysis...",
+  "bias_summaries": {
+    "Left": "Left-leaning perspective...",
+    "Center": "Centrist viewpoint...",
+    "Right": "Right-leaning analysis..."
+  },
+  "sources": [
+    {"name": "Source A", "bias": "Left", "url": "..."},
+    {"name": "Source B", "bias": "Center", "url": "..."}
+  ],
+  "wordpress_post_id": 123
 }
 ```
 
-### RSS Feed Monitoring
-
-The system automatically processes RSS feeds every 6 hours via Vercel cron jobs. Manual trigger:
-
-```bash
-curl https://your-vercel-app.vercel.app/api/check_rss_feeds
+### RSS Monitoring (Automated)
+```http
+GET /api/rss_monitor
 ```
+Triggers automatically every hour via Vercel Cron
 
 ### Health Check
-
-```bash
-curl https://your-vercel-app.vercel.app/api/check_rss_feeds/health
+```http
+GET /api/health
 ```
 
-## 🔧 Configuration
+## 🎨 Frontend Features
 
-### Swedish News Sources
+- **Clean, Modern UI**: Responsive design with Tailwind CSS
+- **Political Bias Visualization**: Interactive bar chart showing source distribution
+- **Real-time Processing**: Live updates during news analysis
+- **Mobile Responsive**: Optimized for all device sizes
+- **Accessibility**: WCAG compliant design
 
-The system is pre-configured with major Swedish news outlets:
+## 🔍 Swedish News Sources
 
-**Left-leaning sources:**
+The agent monitors these hardcoded Swedish news outlets:
+
+**Left-leaning:**
 - Aftonbladet
-- Expressen
+- Expressen (some content)
+- ETC
 
-**Center sources:**
-- Dagens Nyheter
+**Center:**
 - SVT Nyheter
-- Sveriges Radio
+- SR Ekot
+- TT Nyhetsbyrån
 
-**Right-leaning sources:**
+**Right-leaning:**
 - Svenska Dagbladet
-- Göteborgs-Posten
+- Dagens Nyheter (some content)
+- Dagens Industri
 
-### Customization
+## 🧪 Testing
 
-To add new sources, edit `src/config/settings.py`:
-
-```python
-SWEDISH_NEWS_SOURCES = {
-    "new-source.se": {
-        "name": "New Source",
-        "bias": "Center",
-        "rss_feed": "https://new-source.se/rss",
-        "search_domain": "new-source.se"
-    }
-}
-```
-
-## 🏢 Project Structure
-
-```
-news-agent/
-├── api/                          # Vercel serverless functions
-│   ├── process_news_topic.py     # Main processing endpoint
-│   └── check_rss_feeds.py        # RSS monitoring cron job
-├── src/                          # Source code
-│   ├── agents/                   # Main orchestration
-│   │   └── news_agent.py         # NewsAgent class
-│   ├── components/               # Core components
-│   │   └── llm_manager.py        # Gemini LLM integration
-│   ├── config/                   # Configuration
-│   │   └── settings.py           # Settings and constants
-│   ├── models/                   # Data models
-│   │   └── news_models.py        # Pydantic models
-│   ├── prompts/                  # LLM prompts
-│   │   └── bias_analysis_prompts.py
-│   ├── utils/                    # Utilities
-│   │   ├── web_scraper.py        # Web scraping
-│   │   └── wordpress_publisher.py # WordPress integration
-│   └── vectorstores/             # Vector database
-│       └── supabase_store.py     # Supabase integration
-├── setup/                        # Setup scripts
-│   └── supabase_setup.sql        # Database schema
-├── .env.example                  # Environment template
-├── vercel.json                   # Vercel configuration
-├── requirements.txt              # Python dependencies
-└── README.md                     # This file
-```
-
-## 🛠️ Development
-
-### Adding New Features
-
-1. **New Analysis Types**: Extend `LLMManager` with new prompt templates
-2. **Additional Sources**: Update `SWEDISH_NEWS_SOURCES` in settings
-3. **Custom Outputs**: Modify `ProcessingResult` model and WordPress publisher
-
-### Testing
-
+### Component Tests
 ```bash
-# Unit tests (implement as needed)
-python -m pytest tests/
-
-# Integration tests
-python tests/test_integration.py
-
-# Load testing
-python tests/test_performance.py
+# Test individual components
+python basic_component_test.py
 ```
 
-### Monitoring
-
-- **Vercel Logs**: Monitor function execution and errors
-- **Supabase Logs**: Track database performance
-- **WordPress**: Monitor successful publications
-
-## 🔍 Troubleshooting
-
-### Common Issues
-
-**1. Import Errors**
+### Quick Functionality Check
 ```bash
-# Solution: Ensure PYTHONPATH includes src directory
-export PYTHONPATH="${PYTHONPATH}:src"
+# Verify core setup
+python quick_test.py
 ```
 
-**2. Supabase Connection Issues**
-- Verify `SUPABASE_URL` and `SUPABASE_ANON_KEY`
-- Check if pg_vector extension is enabled
-- Ensure network connectivity
+### Full Workflow Test
+```bash
+# End-to-end processing test
+python real_workflow_test.py
+```
 
-**3. LLM Rate Limits**
-- Monitor Gemini API usage
-- Implement exponential backoff for retries
-- Consider request batching
+## 📊 Performance & Scalability
 
-**4. RSS Feed Parsing**
-- Some feeds may require custom parsing
-- Check feed validity with online validators
-- Verify SSL certificates for HTTPS feeds
+- **Serverless Architecture**: Auto-scaling Vercel Functions
+- **Vector Database**: Optimized similarity search with indexes
+- **Efficient LLM Usage**: Context-aware prompt management
+- **Caching**: Built-in caching for static assets and API responses
+- **Error Handling**: Robust error recovery and logging
 
-## 📊 Performance Optimization
+## 🔐 Security
 
-### Vercel Function Optimization
-- **Cold Start**: Minimize imports and initialization
-- **Memory Usage**: Monitor and adjust function memory allocation
-- **Timeout**: Adjust based on processing complexity
+- **Environment Variables**: Secure credential management
+- **API Key Rotation**: Support for key updates without downtime
+- **Input Validation**: Pydantic models for request validation
+- **Rate Limiting**: Built-in Vercel function limits
+- **HTTPS**: Secure communication for all endpoints
 
-### Database Optimization
-- **Vector Search**: Tune `lists` parameter for IVFFlat index
-- **Batch Operations**: Use batch inserts for multiple articles
-- **Connection Pooling**: Implement for high-volume usage
+## 🚀 Deployment Options
 
-### LLM Optimization
-- **Context Management**: Limit article content length for prompts
-- **Parallel Processing**: Process bias summaries concurrently
-- **Caching**: Cache embeddings and frequent results
+### Option 1: Vercel CLI
+```bash
+npx vercel login
+npx vercel --prod
+```
 
-## 🔐 Security Considerations
+### Option 2: GitHub Integration
+1. Push to GitHub
+2. Connect repository to Vercel
+3. Configure environment variables
+4. Auto-deploy on push
 
-### Environment Variables
-- Use Vercel's encrypted environment variables
-- Rotate API keys regularly
-- Implement least-privilege access
+### Option 3: Manual Deployment
+Upload via Vercel dashboard with manual configuration
 
-### Database Security
-- Use Row Level Security (RLS) in Supabase
-- Implement proper authentication for sensitive operations
-- Regular security audits
+## 📈 Monitoring & Observability
 
-### WordPress Security
-- Use Application Passwords instead of regular passwords
-- Implement HTTPS for all communications
-- Monitor for unauthorized posts
+- **Vercel Analytics**: Function performance and usage
+- **Supabase Monitoring**: Database queries and vector operations
+- **Error Tracking**: Comprehensive logging for debugging
+- **Health Checks**: Automated system status verification
 
-## 📈 Scaling
+## 🔄 Maintenance
 
-### High Volume Scenarios
-- **Rate Limiting**: Implement request rate limiting
-- **Queue System**: Add job queue for heavy processing
-- **Caching Layer**: Implement Redis for frequent queries
-- **CDN**: Use CDN for static assets and API responses
+### Regular Tasks
+- Monitor API key usage and limits
+- Review and update news source lists
+- Check vector database performance
+- Validate bias classifications
+- Update dependency versions
 
-### Multi-Language Support
-- Extend news sources for other countries
-- Implement language-specific LLM models
-- Add translation capabilities
+### Automated Tasks
+- RSS feed monitoring (hourly)
+- Database cleanup (weekly)
+- Health checks (continuous)
+- Error reporting (real-time)
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Development Guidelines
-- Follow Python PEP 8 style guidelines
-- Add type hints for all functions
-- Include docstrings for classes and methods
-- Write tests for new functionality
+2. Create a feature branch
+3. Run tests: `python -m pytest tests/`
+4. Submit a pull request
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT License - see [LICENSE](LICENSE) file for details
 
-## 🙏 Acknowledgments
+## 🆘 Support
 
-- **LangChain**: For LLM orchestration framework
-- **Supabase**: For vector database infrastructure
-- **Vercel**: For serverless deployment platform
-- **Google**: For Gemini AI capabilities
-- **Swedish News Outlets**: For providing RSS feeds and content
+- **Issues**: [GitHub Issues](https://github.com/yourusername/news-agent/issues)
+- **Documentation**: See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)
+- **API Reference**: Check endpoint documentation above
 
 ---
 
-**🚀 Ready to deploy?** Follow the setup instructions above and start monitoring Swedish news with AI-powered political bias analysis! 
+**Built with:** Python 3.13, LangChain, Google Gemini, Supabase, Vercel, React
+
+**Last Updated:** January 2025 
