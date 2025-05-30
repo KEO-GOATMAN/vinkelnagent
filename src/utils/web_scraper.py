@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 import trafilatura
 import logging
 
-from ..config.settings import settings, SWEDISH_NEWS_SOURCES, get_all_rss_feeds
+from ..config.settings import settings, get_all_rss_feeds
 from ..models.news_models import NewsArticle, RSSFeedItem, SearchResult
 
 logger = logging.getLogger(__name__)
@@ -195,7 +195,7 @@ class WebScraper:
             url = "https://google.serper.dev/search"
             
             # Create search query with Swedish news sites
-            swedish_domains = " OR ".join([f"site:{domain}" for domain in SWEDISH_NEWS_SOURCES.keys()])
+            swedish_domains = " OR ".join([f"site:{domain}" for domain in settings.SWEDISH_NEWS_SOURCES.keys()])
             search_query = f"{query} ({swedish_domains})"
             
             payload = {
@@ -260,7 +260,7 @@ class WebScraper:
                 
                 # Find matching source info
                 source_info = None
-                for source_domain, info in SWEDISH_NEWS_SOURCES.items():
+                for source_domain, info in settings.SWEDISH_NEWS_SOURCES.items():
                     if source_domain in domain or domain in source_domain:
                         source_info = info
                         break
@@ -303,7 +303,7 @@ class WebScraper:
         # Extract articles from relevant RSS items
         for item in relevant_rss_items:
             source_info = None
-            for domain, info in SWEDISH_NEWS_SOURCES.items():
+            for domain, info in settings.SWEDISH_NEWS_SOURCES.items():
                 if info['name'] == item.source:
                     source_info = info
                     break

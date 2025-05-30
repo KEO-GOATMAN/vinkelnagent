@@ -251,6 +251,38 @@ class WordPressPublisher:
             logger.error(f"Error updating WordPress post: {e}")
             return False
     
+    async def test_connection(self) -> bool:
+        """Test WordPress REST API connection."""
+        if not self._is_configured():
+            logger.error("WordPress not configured")
+            return False
+        
+        try:
+            # Test by trying to get current user info
+            auth = aiohttp.BasicAuth(self.username, self.password)
+            headers = {"Accept": "application/json"}
+            
+            # Use the users/me endpoint to test authentication
+            test_endpoint = f"{self.api_base}/users/me"
+            
+            async with aiohttp.ClientSession() as session:
+                async with session.get(
+                    test_endpoint,
+                    auth=auth,
+                    headers=headers,
+                    timeout=aiohttp.ClientTimeout(total=10)
+                ) as response:
+                    
+                    if response.status == 200:
+                        return True
+                    else:
+                        logger.error(f"WordPress test failed: {response.status}")
+                        return False
+                        
+        except Exception as e:
+            logger.error(f"WordPress connection test failed: {e}")
+            return False
+    
     def _is_configured(self) -> bool:
         """Check if WordPress is properly configured."""
         return all([

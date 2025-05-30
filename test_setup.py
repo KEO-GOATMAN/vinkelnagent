@@ -61,12 +61,12 @@ async def test_supabase_connection() -> bool:
         
         # Try a simple query to test connection
         try:
-            result = store.client.table('news_articles').select("id").limit(1).execute()
+            result = store.client.table('news_embeddings').select("id").limit(1).execute()
             logger.info("✅ Supabase connection successful")
             return True
         except Exception as e:
-            if "relation \"news_articles\" does not exist" in str(e):
-                logger.warning("⚠️  Supabase connected but 'news_articles' table not found")
+            if "relation \"news_embeddings\" does not exist" in str(e):
+                logger.warning("⚠️  Supabase connected but 'news_embeddings' table not found")
                 logger.warning("   Run the setup script: setup/supabase_setup.sql")
                 return False
             else:

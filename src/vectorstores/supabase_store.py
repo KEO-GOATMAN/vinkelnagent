@@ -21,7 +21,7 @@ class SupabaseVectorStore:
     """Vector store implementation using Supabase with pg_vector."""
     
     def __init__(self):
-        """Initialize the Supabase client and embedding model."""
+        """Initialize the Supabase vector store."""
         self.client: Client = create_client(
             settings.SUPABASE_URL,
             settings.SUPABASE_ANON_KEY
@@ -31,18 +31,23 @@ class SupabaseVectorStore:
         self.embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
         self.embedding_dimension = 384
         
-        # Ensure table exists
-        asyncio.create_task(self._ensure_table_exists())
+        # Table existence will be ensured when first used
+        self._table_checked = False
     
     async def _ensure_table_exists(self) -> None:
         """Ensure the vector table exists with proper schema."""
+        if self._table_checked:
+            return
+            
         try:
             # Check if table exists and create if needed
             result = self.client.table(settings.VECTOR_TABLE_NAME).select("id").limit(1).execute()
             logger.info(f"Vector table '{settings.VECTOR_TABLE_NAME}' exists and is accessible")
+            self._table_checked = True
         except Exception as e:
             logger.warning(f"Vector table may not exist or is not accessible: {e}")
             # Note: Table creation should be handled by database setup script
+            self._table_checked = True
     
     def _generate_content_id(self, content: str, url: str) -> str:
         """Generate a unique ID for content based on URL and content hash."""
@@ -57,6 +62,9 @@ class SupabaseVectorStore:
     async def add_article(self, article: NewsArticle) -> str:
         """Add a news article to the vector store."""
         try:
+            # Ensure table exists
+            await self._ensure_table_exists()
+            
             # Create content for embedding (title + summary of content)
             content_for_embedding = f"{article.title}\n\n{article.content[:1000]}"
             
@@ -119,6 +127,9 @@ class SupabaseVectorStore:
     ) -> List[Tuple[VectorStoreEntry, float]]:
         """Perform similarity search to find related articles."""
         try:
+            # Ensure table exists
+            await self._ensure_table_exists()
+            
             # Create embedding for query
             query_embedding = self._create_embedding(query)
             

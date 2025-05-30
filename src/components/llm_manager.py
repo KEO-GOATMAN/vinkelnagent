@@ -10,7 +10,7 @@ from typing import List, Dict, Any, Optional, Tuple
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains import LLMChain
 from langchain.schema import HumanMessage, SystemMessage
-from google.generativeai.types import ThinkingConfig, GenerationConfig
+from google.generativeai.types import GenerationConfig
 
 from ..config.settings import settings
 from ..models.news_models import (
@@ -36,10 +36,7 @@ class LLMManager:
             google_api_key=settings.GEMINI_API_KEY,
             temperature=0.0,  # Low creativity for factual reporting
             max_tokens=settings.MAX_TOKENS,
-            convert_system_message_to_human=True,
-            generation_config=GenerationConfig(
-                thinking_config=ThinkingConfig(thinking_budget=0)  # Disable reasoning tokens
-            )
+            convert_system_message_to_human=True
         )
         
         # Create chains for different tasks
@@ -317,6 +314,16 @@ Kontext {i}:
         except Exception as e:
             logger.error(f"Error generating internal links: {e}")
             return []
+    
+    async def generate_simple_response(self, query: str) -> str:
+        """Generate a simple response for testing purposes."""
+        try:
+            messages = [HumanMessage(content=query)]
+            response = await self.llm.ainvoke(messages)
+            return response.content if hasattr(response, 'content') else str(response)
+        except Exception as e:
+            logger.error(f"Error generating simple response: {e}")
+            return f"Error: {str(e)}"
 
 
 # Global instance
