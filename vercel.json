@@ -2,11 +2,11 @@
   "functions": {
     "api/process_news_topic.py": {
       "runtime": "python3.9",
-      "maxDuration": 59
+      "maxDuration": 60
     },
     "api/rss_monitor.py": {
       "runtime": "python3.9",
-      "maxDuration": 59
+      "maxDuration": 60
     },
     "api/health.py": {
       "runtime": "python3.9",
