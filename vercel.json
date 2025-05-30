@@ -13,12 +13,6 @@
       "maxDuration": 10
     }
   },
-  "crons": [
-    {
-      "path": "/api/rss_monitor",
-      "schedule": "0 */1 * * *"
-    }
-  ],
   "env": {
     "GEMINI_API_KEY": "@gemini_api_key",
     "SUPABASE_URL": "@supabase_url",
