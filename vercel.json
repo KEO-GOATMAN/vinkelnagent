@@ -13,15 +13,6 @@
       "maxDuration": 10
     }
   },
-  "env": {
-    "GEMINI_API_KEY": "@gemini_api_key",
-    "SUPABASE_URL": "@supabase_url",
-    "SUPABASE_ANON_KEY": "@supabase_anon_key",
-    "SERPER_API_KEY": "@serper_api_key",
-    "WORDPRESS_URL": "@wordpress_url",
-    "WORDPRESS_USERNAME": "@wordpress_username",
-    "WORDPRESS_PASSWORD": "@wordpress_password"
-  },
   "build": {
     "env": {
       "PYTHONPATH": "src"
