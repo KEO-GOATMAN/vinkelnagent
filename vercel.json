@@ -2,17 +2,21 @@
   "functions": {
     "api/process_news_topic.py": {
       "runtime": "python3.9",
-      "maxDuration": 60
+      "maxDuration": 59
     },
-    "api/check_rss_feeds.py": {
+    "api/rss_monitor.py": {
       "runtime": "python3.9",
-      "maxDuration": 300
+      "maxDuration": 59
+    },
+    "api/health.py": {
+      "runtime": "python3.9",
+      "maxDuration": 10
     }
   },
   "crons": [
     {
-      "path": "/api/check_rss_feeds",
-      "schedule": "0 */6 * * *"
+      "path": "/api/rss_monitor",
+      "schedule": "0 */1 * * *"
     }
   ],
   "env": {
