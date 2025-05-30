@@ -1,0 +1,32 @@
+{
+  "functions": {
+    "api/process_news_topic.py": {
+      "runtime": "python3.9",
+      "maxDuration": 60
+    },
+    "api/check_rss_feeds.py": {
+      "runtime": "python3.9",
+      "maxDuration": 300
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/check_rss_feeds",
+      "schedule": "0 */6 * * *"
+    }
+  ],
+  "env": {
+    "GEMINI_API_KEY": "@gemini_api_key",
+    "SUPABASE_URL": "@supabase_url",
+    "SUPABASE_ANON_KEY": "@supabase_anon_key",
+    "SERPER_API_KEY": "@serper_api_key",
+    "WORDPRESS_URL": "@wordpress_url",
+    "WORDPRESS_USERNAME": "@wordpress_username",
+    "WORDPRESS_PASSWORD": "@wordpress_password"
+  },
+  "build": {
+    "env": {
+      "PYTHONPATH": "src"
+    }
+  }
+} 

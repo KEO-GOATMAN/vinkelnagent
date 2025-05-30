@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Agent - Political Bias Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 2rem;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            display: none;
+        }
+
+        .bias-section {
+            margin-bottom: 2rem;
+        }
+
+        .bias-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .bias-card:hover {
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .bias-card.left {
+            border-left: 5px solid #e74c3c;
+        }
+
+        .bias-card.center {
+            border-left: 5px solid #f39c12;
+        }
+
+        .bias-card.right {
+            border-left: 5px solid #3498db;
+        }
+
+        .bias-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .bias-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .bias-badge.left { background: #e74c3c; }
+        .bias-badge.center { background: #f39c12; }
+        .bias-badge.right { background: #3498db; }
+
+        .neutral-summary {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .neutral-summary h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .key-facts {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .key-facts h4 {
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .key-facts ul {
+            list-style: none;
+        }
+
+        .key-facts li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .key-facts li:before {
+            content: "✓";
+            color: #00b894;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .error {
+            background: #e74c3c;
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .sources-count {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .input-section {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗞️ News Agent</h1>
+            <p>Automated Political Bias Analysis for Swedish News</p>
+        </div>
+
+        <div class="main-content">
+            <div class="input-section">
+                <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">Process News Topic</h2>
+                
+                <form id="newsForm">
+                    <div class="input-group">
+                        <label for="topicTitle">News Topic Title</label>
+                        <input type="text" id="topicTitle" name="topicTitle" 
+                               placeholder="e.g., Regeringens nya klimatpolitik">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="topicUrl">News Article URL (Optional)</label>
+                        <input type="url" id="topicUrl" name="topicUrl" 
+                               placeholder="https://example.com/article">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="topicDescription">Topic Description (Optional)</label>
+                        <textarea id="topicDescription" name="topicDescription" 
+                                  placeholder="Additional context or specific details about the news topic..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        📊 Analyze Political Bias
+                    </button>
+                </form>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <h3>Processing news articles...</h3>
+                <p>This may take a few moments while we gather and analyze content from Swedish news sources.</p>
+            </div>
+
+            <div class="error" id="error" style="display: none;"></div>
+
+            <div class="results" id="results">
+                <div class="neutral-summary" id="neutralSummary">
+                    <h3>📰 Neutral Summary</h3>
+                    <div id="neutralContent"></div>
+                    <div class="key-facts" id="keyFacts" style="display: none;">
+                        <h4>Key Facts</h4>
+                        <ul id="keyFactsList"></ul>
+                    </div>
+                </div>
+
+                <div class="bias-section">
+                    <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">Political Perspective Analysis</h2>
+                    
+                    <div class="bias-card left" id="leftCard">
+                        <div class="bias-title">
+                            <span>Left Perspective</span>
+                            <span class="bias-badge left">Vänster</span>
+                        </div>
+                        <div id="leftContent"></div>
+                        <div class="sources-count" id="leftSources"></div>
+                    </div>
+
+                    <div class="bias-card center" id="centerCard">
+                        <div class="bias-title">
+                            <span>Center Perspective</span>
+                            <span class="bias-badge center">Center</span>
+                        </div>
+                        <div id="centerContent"></div>
+                        <div class="sources-count" id="centerSources"></div>
+                    </div>
+
+                    <div class="bias-card right" id="rightCard">
+                        <div class="bias-title">
+                            <span>Right Perspective</span>
+                            <span class="bias-badge right">Höger</span>
+                        </div>
+                        <div id="rightContent"></div>
+                        <div class="sources-count" id="rightSources"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('newsForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+                topic_title: formData.get('topicTitle'),
+                topic_url: formData.get('topicUrl'),
+                topic_description: formData.get('topicDescription')
+            };
+
+            // Validate input
+            if (!data.topic_title && !data.topic_url && !data.topic_description) {
+                showError('Please provide at least one input field.');
+                return;
+            }
+
+            // Show loading state
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('submitBtn').disabled = true;
+
+            try {
+                const response = await fetch('/api/process_news_topic', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `HTTP ${response.status}`);
+                }
+
+                const result = await response.json();
+                displayResults(result);
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError(`Failed to process news topic: ${error.message}`);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('submitBtn').disabled = false;
+            }
+        });
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function displayResults(data) {
+            document.getElementById('error').style.display = 'none';
+            
+            // Display neutral summary
+            document.getElementById('neutralContent').textContent = data.neutral_summary.summary;
+            
+            // Display key facts if available
+            if (data.neutral_summary.key_facts && data.neutral_summary.key_facts.length > 0) {
+                const keyFactsList = document.getElementById('keyFactsList');
+                keyFactsList.innerHTML = '';
+                data.neutral_summary.key_facts.forEach(fact => {
+                    const li = document.createElement('li');
+                    li.textContent = fact;
+                    keyFactsList.appendChild(li);
+                });
+                document.getElementById('keyFacts').style.display = 'block';
+            }
+
+            // Display bias summaries
+            const biasMap = {
+                'Left': { content: 'leftContent', sources: 'leftSources' },
+                'Center': { content: 'centerContent', sources: 'centerSources' },
+                'Right': { content: 'rightContent', sources: 'rightSources' }
+            };
+
+            data.bias_summaries.forEach(summary => {
+                const mapping = biasMap[summary.political_bias];
+                if (mapping) {
+                    document.getElementById(mapping.content).textContent = summary.summary;
+                    document.getElementById(mapping.sources).textContent = 
+                        `${summary.article_count} articles from: ${summary.sources.join(', ') || 'No sources'}`;
+                }
+            });
+
+            document.getElementById('results').style.display = 'block';
+        }
+    </script>
+</body>
+</html> 
